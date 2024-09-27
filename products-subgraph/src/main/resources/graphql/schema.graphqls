@@ -1,0 +1,52 @@
+
+
+type Product @key(fields:"id") {
+    id:ID!
+    vendorId: String!
+    globalEntityId: String
+    globalVendorId: String
+    catalogVendorId: String
+    platformVendorId: String
+    vendorProductId: String
+    remoteProductId: String
+    active: Boolean
+    available: Boolean
+    deleted: Boolean
+    salesBuffer: String
+    maximumSalesQuantity: String
+    price: Float
+    originalPrice: Float
+    defaultLocale: String
+    skuStatus: String
+    vendorPosIntegrated: Boolean
+    platformType: String
+    sku: String
+    tags: [String]
+    productDetails: MasterProduct
+    parentId: String
+    minPriceLastMonth: Float
+    isBundle: Boolean
+    uuid: String
+    baseWeight: Float
+    pricePerBaseWeight: Float
+}
+
+
+type VendorProductReference {
+    remoteProductId: String
+    uuid: String
+    productDetails: MasterProduct
+}
+
+
+type Query {
+    getVendorProductById(id: String!): Product
+    getAllVendorProducts: [Product]
+}
+
+
+type MasterProduct @key(fields: "code country override_ids") @extends {
+    code: String! @external
+    country: String  @external
+    override_ids: [String]  @external
+}

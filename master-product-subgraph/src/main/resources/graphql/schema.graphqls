@@ -1,0 +1,167 @@
+
+extend schema
+@link(
+    url: "https://specs.apollo.dev/federation/v2.0"
+    import: ["@shareable", "@key", "@override", "@inaccessible"]
+)
+
+
+# Enum for Product Status
+enum Status {
+    ACTIVE
+    ARCHIVE
+    DRAFT
+    DELETED
+}
+
+# Type for Weight
+type Weight {
+    value: Float!
+    unit: String!
+}
+
+# Type for Dimensions
+type Dimensions {
+    size: Float!
+    width: Float!
+    height: Float!
+    length: Float!
+    weight: Float!
+    weight_unit: String!
+    units_per_pack: Int!
+    unit_of_measure: String!
+}
+
+# Type for ProductTypeInfo
+type ProductTypeInfo {
+    id: String!
+}
+
+# Type for BrandInfo
+type BrandInfo {
+    slug_id: String!
+}
+
+# Type for CategoryInfo
+type CategoryInfo {
+    id: String!
+}
+
+# Type for Image
+type Image {
+    id: String!
+    name: String!
+    path: String!
+    url: String!
+    content_type: String!
+    content_length: Int!
+}
+
+# Type for VariantAttribute
+type VariantAttribute {
+    id: String!
+    name: [LocalizedString]!
+}
+
+# Type for Option
+type Option {
+    id: String!
+    name: [LocalizedString]!
+}
+
+# Type for SelectedOption
+type SelectedOption {
+    variant_attribute: VariantAttribute!
+    option: Option!
+}
+
+# Type for GroupInfo
+type GroupInfo {
+    id: String!
+}
+
+# Type for VariantsInfo
+type VariantsInfo {
+    group_info: GroupInfo!
+    selected_options: [SelectedOption]!
+}
+
+# Type for WeightableAttribute
+type WeightableAttribute {
+    sold_by_weight: Boolean!
+    minimum_starting_weight: Weight!
+    sold_by_piece: Boolean!
+    average_weight_per_piece: Weight!
+}
+
+# Type for CountryReadiness
+type CountryReadiness {
+    is_ready: Boolean!
+    validation_errors: [String]!
+}
+
+# Main Product Type
+type MasterProduct @key(fields: "code country override_ids") {
+    code: String!
+    country: String
+    override_ids: [String] @inaccessible
+    product_type: ProductTypeInfo!
+    slug_name: String!
+    brand: BrandInfo!
+    status: Status!
+    category: CategoryInfo!
+    tags: [String]!
+    dimensions: Dimensions!
+    variants_info: VariantsInfo!
+    variant_enabled: Boolean!
+    tax_rate_by_country: [TaxRate]!
+    product_name_by_locale: [LocalizedString]!
+    description_by_locale: [LocalizedString]!
+    images: [Image]!
+    is_packaged_food: Boolean!
+    barcodes: [String]!
+    weightable_attributes: WeightableAttribute!
+    readiness_status: [ReadinessStatus]!
+    has_food_labelling: [FoodLabelling]!
+    product_override: ProductOverride
+}
+
+# Type for Tax Rate
+type TaxRate {
+    country: String!
+    rate: Float!
+}
+
+# Localized string type
+type LocalizedString {
+    locale: String!
+    value: String!
+}
+
+# ReadinessStatus Type
+type ReadinessStatus {
+    country: String!
+    status: CountryReadiness!
+}
+
+# FoodLabelling Type
+type FoodLabelling {
+    country: String!
+    is_labelling: Boolean!
+}
+
+
+
+type ProductOverride {
+    images: [Image]                        # List of images
+    tax_rate_by_country: [TaxRate]
+    product_name_by_locale: [LocalizedString]
+    description_by_locale: [LocalizedString]!
+}
+
+# Query Type
+type Query {
+    getMasterProduct(code: String!, country: String, override_ids: [String]): MasterProduct
+    listProducts: [MasterProduct]!
+    # Pim other Query impolementation
+}
