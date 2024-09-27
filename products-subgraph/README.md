@@ -2,18 +2,7 @@
 
 [Apollo Federation JVM](https://github.com/apollographql/federation-jvm) example subgraph implementation using [Spring GraphQL](https://docs.spring.io/spring-graphql/docs/current/reference/html/) and exposing the federated `Product` type.
 
-```graphql
-type Query {
-    product(id: ID!): Product
-    products: [Product!]!
-}
 
-type Product @key(fields: "id") {
-    id: ID!
-    name: String!
-    description: String
-}
-```
 
 ### Running locally
 Build the application by running the following from the project directory:
